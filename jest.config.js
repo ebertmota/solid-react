@@ -1,4 +1,10 @@
 module.exports = {
+  globals: {
+    "ts-jest": {
+      isolatedModules: true
+    }
+  },
+  preset: 'ts-jest',
   roots: ['<rootDir>/src'],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}'
@@ -7,5 +13,5 @@ module.exports = {
   testEnvironment: 'node',
   transform: {
     '.+\\.ts&': 'ts-jest'
-  }
+  },
 }

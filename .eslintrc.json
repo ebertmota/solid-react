@@ -24,6 +24,10 @@
         "prettier"
     ],
     "rules": {
+      "import/prefer-default-export": "off",
+      "max-classes-per-file": "off",
+      "no-useless-constructor": "off",
+      "class-methods-use-this": "off",
       "prettier/prettier": "error",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
