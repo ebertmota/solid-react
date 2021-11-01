@@ -5,6 +5,7 @@ import { RemoteAuthentication } from './remote-authentication';
 describe('RemoteAuthentication', () => {
   let httpPostClientSpy: HttpPostClient & any;
   let sut: RemoteAuthentication;
+
   beforeEach(() => {
     httpPostClientSpy = new HttpPostClientSpy();
     sut = new RemoteAuthentication('any_url', httpPostClientSpy);

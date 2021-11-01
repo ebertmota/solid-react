@@ -12,6 +12,7 @@
     "test:ci": "yarn test --coverage"
   },
   "devDependencies": {
+    "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -25,6 +26,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4",
+    "faker": "^5.5.3",
     "git-commit-msg-linter": "^3.2.8",
     "husky": "^7.0.4",
     "jest": "^27.3.1",
