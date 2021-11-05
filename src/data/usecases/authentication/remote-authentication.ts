@@ -1,4 +1,4 @@
-import { AuthCredentials } from '../../../domain/usecases/authentication';
+import { AuthCredentials } from '@/domain/usecases/authentication';
 import { HttpPostClient } from '../../protocols/http/http-post-client';
 
 export class RemoteAuthentication {

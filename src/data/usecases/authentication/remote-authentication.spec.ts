@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { mockAuthenticationCredentials } from '../../../domain/test/mock-authentication';
+import { mockAuthenticationCredentials } from '@/domain/test/mock-authentication';
 import { HttpPostClientSpy } from '../../test/mock-http-client';
 import { RemoteAuthentication } from './remote-authentication';
 
