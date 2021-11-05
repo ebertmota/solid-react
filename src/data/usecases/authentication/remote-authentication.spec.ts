@@ -1,15 +1,11 @@
 import faker from 'faker';
-import {
-  mockAuthenticationCredentials,
-  mockAccountModel,
-} from '@/domain/test/mock-account';
-import { HttpPostClientSpy } from '../../test/mock-http-client';
+import { HttpPostClientSpy } from '../../test';
 import { RemoteAuthentication } from './remote-authentication';
-import { InvalidCredentialsError } from '@/domain/errors/invalid-credentials-error';
-import { HttpStatusCode } from '@/data/protocols/http/http-response';
-import { UnexpectedError } from '@/domain/errors/unexpected-error';
-import { AuthenticationCredentials } from '@/domain/usecases/authentication';
-import { AccountModel } from '@/domain/models/account-model';
+import { HttpStatusCode } from '@/data/protocols/http';
+import { mockAuthenticationCredentials, mockAccountModel } from '@/domain/test';
+import { AccountModel } from '@/domain/models';
+import { AuthenticationCredentials } from '@/domain/usecases';
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors';
 
 describe('RemoteAuthentication', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
