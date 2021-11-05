@@ -2,6 +2,8 @@ import faker from 'faker';
 import { mockAuthenticationCredentials } from '@/domain/test/mock-authentication';
 import { HttpPostClientSpy } from '../../test/mock-http-client';
 import { RemoteAuthentication } from './remote-authentication';
+import { InvalidCredentialsError } from '@/domain/errors/invalid-credentials-error';
+import { HttpStatusCode } from '@/data/protocols/http/http-response';
 
 describe('RemoteAuthentication', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,5 +28,15 @@ describe('RemoteAuthentication', () => {
     await sut.auth(credentials);
 
     expect(httpPostClientSpy.body).toEqual(credentials);
+  });
+
+  it('should throw InvalidCredentialsError if HttpPostClient returns 401', async () => {
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.unauthorized,
+    };
+
+    const promise = sut.auth(mockAuthenticationCredentials());
+
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError());
   });
 });
