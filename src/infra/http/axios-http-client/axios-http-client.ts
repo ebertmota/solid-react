@@ -4,6 +4,8 @@ import { HttpPostParams } from '@/data/protocols/http';
 
 export class AxiosHttpClient {
   async post(params: HttpPostParams<any>): Promise<void> {
-    await axios.post(params.url);
+    const { url, body } = params;
+
+    await axios.post(url, body);
   }
 }
