@@ -15,10 +15,14 @@
     "paths": {
       "@/*": ["*"]
     },
+    "plugins": [{
+      "name": "typescript-plugin-css-modules"
+    }],
     "allowJs": true,
     "resolveJsonModule": true
   },
   "include": [
-    "src"
+    "src",
+    "src/config/scss.d.ts"
   ]
 }
