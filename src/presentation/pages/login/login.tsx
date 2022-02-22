@@ -17,6 +17,7 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
   const [state, setState] = useState({
     isLoading: false,
     email: '',
+    password: '',
     emailError: 'Campo obrigatório',
     passwordError: 'Campo obrigatório',
     defaultError: '',
@@ -28,6 +29,13 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email]);
+
+  useEffect(() => {
+    validation.validate({
+      password: state.password,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.password]);
 
   return (
     <div className={Styles.login}>
