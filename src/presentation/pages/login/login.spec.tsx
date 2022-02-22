@@ -48,4 +48,13 @@ describe('Login component', () => {
       email: 'any_email',
     });
   });
+
+  it('should call Validation with correct password', () => {
+    const passwordInput = sut.getByTestId('password');
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+
+    expect(validation.validate).toHaveBeenCalledWith({
+      password: 'any_password',
+    });
+  });
 });
