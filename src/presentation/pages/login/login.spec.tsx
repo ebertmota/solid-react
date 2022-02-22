@@ -1,13 +1,28 @@
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from '@testing-library/react';
+import { mock, MockProxy } from 'jest-mock-extended';
+import { Validation } from '@/presentation/protocols';
 import { Login } from '..';
 
 describe('Login component', () => {
+  let validation: MockProxy<Validation>;
   let sut: RenderResult;
 
-  beforeEach(() => {
-    sut = render(<Login />);
+  beforeAll(() => {
+    validation = mock();
+    validation.validate.mockReturnValue('');
   });
+
+  beforeEach(() => {
+    sut = render(<Login validation={validation} />);
+  });
+
+  afterEach(cleanup);
 
   it('should start with initial state', () => {
     const errorWrap = sut.getByTestId('error-wrap');
@@ -23,5 +38,14 @@ describe('Login component', () => {
     const passwordStatus = sut.getByTestId('password-status');
     expect(passwordStatus.title).toBe('Campo obrigatório');
     expect(passwordStatus.textContent).toBe('🔴');
+  });
+
+  it('should call Validation with correct email', () => {
+    const emailInput = sut.getByTestId('email');
+    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+
+    expect(validation.validate).toHaveBeenCalledWith({
+      email: 'any_email',
+    });
   });
 });
