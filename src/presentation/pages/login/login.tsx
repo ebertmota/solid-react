@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Input,
   FormStatus,
@@ -6,23 +6,33 @@ import {
   LoginHeader,
 } from '@/presentation/components';
 import Context from '@/presentation/contexts/form/form-context';
+import { Validation } from '@/presentation/protocols';
 import Styles from './login-styles.scss';
 
-export const Login: React.FC = () => {
-  const [state] = useState({
+type LoginProps = {
+  validation: Validation;
+};
+
+export const Login: React.FC<LoginProps> = ({ validation }) => {
+  const [state, setState] = useState({
     isLoading: false,
+    email: '',
+    emailError: 'Campo obrigatório',
+    passwordError: 'Campo obrigatório',
+    defaultError: '',
   });
 
-  const [errors] = useState({
-    email: 'Campo obrigatório',
-    password: 'Campo obrigatório',
-    default: '',
-  });
+  useEffect(() => {
+    validation.validate({
+      email: state.email,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.email]);
 
   return (
     <div className={Styles.login}>
       <LoginHeader />
-      <Context.Provider value={{ state, errors }}>
+      <Context.Provider value={{ state, setState }}>
         <form className={Styles.form}>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
