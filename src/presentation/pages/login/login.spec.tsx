@@ -79,6 +79,18 @@ describe('Login component', () => {
     expect(passwordStatus.textContent).toBe('🔴');
   });
 
+  it('should show valid email state if Validation succeeds', () => {
+    validation.validate.mockReturnValue(null);
+
+    const emailInput = sut.getByTestId('email');
+    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+
+    const emailStatus = sut.getByTestId('email-status');
+
+    expect(emailStatus.title).toBe('Tudo certo!');
+    expect(emailStatus.textContent).toBe('🟢');
+  });
+
   it('should show valid password state if Validation succeeds', () => {
     validation.validate.mockReturnValue(null);
 
