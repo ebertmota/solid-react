@@ -18,13 +18,17 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
     isLoading: false,
     email: '',
     password: '',
-    emailError: 'Campo obrigatório',
+    emailError: '',
     passwordError: 'Campo obrigatório',
     defaultError: '',
   });
 
   useEffect(() => {
-    validation.validate('email', state.email);
+    setState({
+      ...state,
+      emailError: validation.validate('email', state.email),
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email]);
 
