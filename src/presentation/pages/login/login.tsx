@@ -24,16 +24,12 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
   });
 
   useEffect(() => {
-    validation.validate({
-      email: state.email,
-    });
+    validation.validate('email', state.email);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email]);
 
   useEffect(() => {
-    validation.validate({
-      password: state.password,
-    });
+    validation.validate('password', state.password);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.password]);
 
