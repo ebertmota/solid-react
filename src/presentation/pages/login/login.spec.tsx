@@ -38,7 +38,7 @@ describe('Login component', () => {
     expect(emailStatus.textContent).toBe('🔴');
 
     const passwordStatus = sut.getByTestId('password-status');
-    expect(passwordStatus.title).toBe('Campo obrigatório');
+    expect(passwordStatus.title).toBe(error);
     expect(passwordStatus.textContent).toBe('🔴');
   });
 
@@ -67,5 +67,15 @@ describe('Login component', () => {
 
     expect(emailStatus.title).toBe(error);
     expect(emailStatus.textContent).toBe('🔴');
+  });
+
+  it('should show error if password Validation fails', () => {
+    const passwordInput = sut.getByTestId('password');
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+
+    const passwordStatus = sut.getByTestId('password-status');
+
+    expect(passwordStatus.title).toBe(error);
+    expect(passwordStatus.textContent).toBe('🔴');
   });
 });
