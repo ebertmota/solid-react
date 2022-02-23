@@ -10,12 +10,14 @@ import { Validation } from '@/presentation/protocols';
 import { Login } from '..';
 
 describe('Login component', () => {
+  let error: string;
   let validation: MockProxy<Validation>;
   let sut: RenderResult;
 
   beforeAll(() => {
+    error = 'Validation error';
     validation = mock();
-    validation.validate.mockReturnValue('');
+    validation.validate.mockReturnValue(error);
   });
 
   beforeEach(() => {
@@ -32,7 +34,7 @@ describe('Login component', () => {
     expect(submitButton.disabled).toBe(true);
 
     const emailStatus = sut.getByTestId('email-status');
-    expect(emailStatus.title).toBe('Campo obrigatório');
+    expect(emailStatus.title).toBe(error);
     expect(emailStatus.textContent).toBe('🔴');
 
     const passwordStatus = sut.getByTestId('password-status');
@@ -55,5 +57,15 @@ describe('Login component', () => {
       'password',
       'any_password',
     );
+  });
+
+  it('should show error if email Validation fails', () => {
+    const emailInput = sut.getByTestId('email');
+    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+
+    const emailStatus = sut.getByTestId('email-status');
+
+    expect(emailStatus.title).toBe(error);
+    expect(emailStatus.textContent).toBe('🔴');
   });
 });
