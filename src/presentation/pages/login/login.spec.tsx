@@ -102,4 +102,18 @@ describe('Login component', () => {
     expect(passwordStatus.title).toBe('Tudo certo!');
     expect(passwordStatus.textContent).toBe('🟢');
   });
+
+  it('should enable submit button if form is valid', () => {
+    validation.validate.mockReturnValue(null);
+
+    const passwordInput = sut.getByTestId('password');
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+
+    const emailInput = sut.getByTestId('email');
+    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
+
+    expect(submitButton.disabled).toBe(false);
+  });
 });
