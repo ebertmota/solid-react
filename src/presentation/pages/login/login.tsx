@@ -47,7 +47,7 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
           />
           <button
             data-testid="submit"
-            disabled
+            disabled={Boolean(state.emailError || state.passwordError)}
             className={Styles.submit}
             type="submit"
           >
