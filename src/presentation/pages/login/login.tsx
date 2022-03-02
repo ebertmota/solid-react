@@ -7,13 +7,15 @@ import {
 } from '@/presentation/components';
 import Context from '@/presentation/contexts/form/form-context';
 import { Validation } from '@/presentation/protocols';
+import { Authentication } from '@/domain/usecases';
 import Styles from './login-styles.scss';
 
 type LoginProps = {
   validation: Validation;
+  authentication: Authentication;
 };
 
-export const Login: React.FC<LoginProps> = ({ validation }) => {
+export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
   const [state, setState] = useState({
     isLoading: false,
     email: '',
@@ -32,9 +34,15 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email, state.password]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     event.preventDefault();
     setState(currentState => ({ ...currentState, isLoading: true }));
+    await authentication.auth({
+      email: state.email,
+      password: state.password,
+    });
   };
 
   return (
