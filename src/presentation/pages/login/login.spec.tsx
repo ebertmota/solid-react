@@ -7,19 +7,25 @@ import {
 } from '@testing-library/react';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Validation } from '@/presentation/protocols';
+import { Authentication } from '@/domain/usecases';
 import { Login } from '..';
 
 describe('Login component', () => {
   let error: string;
   let validation: MockProxy<Validation>;
+  let authentication: MockProxy<Authentication>;
   let sut: { render: () => RenderResult };
 
   beforeAll(() => {
     error = 'Validation error';
     validation = mock();
     validation.validate.mockReturnValue(null);
+    authentication = mock();
     sut = {
-      render: () => render(<Login validation={validation} />),
+      render: () =>
+        render(
+          <Login validation={validation} authentication={authentication} />,
+        ),
     };
   });
 
@@ -143,5 +149,25 @@ describe('Login component', () => {
     const spinner = component.getByTestId('spinner');
 
     expect(spinner).toBeTruthy();
+  });
+
+  it('should call Authentication with correct params', () => {
+    const component = sut.render();
+
+    const passwordInput = component.getByTestId('password');
+    const password = 'any_password';
+    fireEvent.input(passwordInput, { target: { value: password } });
+
+    const emailInput = component.getByTestId('email');
+    const email = 'any_email';
+    fireEvent.input(emailInput, { target: { value: email } });
+
+    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
+    fireEvent.click(submitButton);
+
+    expect(authentication.auth).toHaveBeenCalledWith({
+      email,
+      password,
+    });
   });
 });
