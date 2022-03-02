@@ -32,11 +32,16 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email, state.password]);
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    setState(currentState => ({ ...currentState, isLoading: true }));
+  };
+
   return (
     <div className={Styles.login}>
       <LoginHeader />
       <Context.Provider value={{ state, setState }}>
-        <form className={Styles.form}>
+        <form className={Styles.form} onSubmit={handleSubmit}>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input
