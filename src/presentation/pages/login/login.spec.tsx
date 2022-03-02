@@ -127,4 +127,21 @@ describe('Login component', () => {
 
     expect(submitButton.disabled).toBe(false);
   });
+
+  it('should show loading spinner on submit', () => {
+    const component = sut.render();
+
+    const passwordInput = component.getByTestId('password');
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+
+    const emailInput = component.getByTestId('email');
+    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+
+    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
+    fireEvent.click(submitButton);
+
+    const spinner = component.getByTestId('spinner');
+
+    expect(spinner).toBeTruthy();
+  });
 });
