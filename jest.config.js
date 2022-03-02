@@ -15,6 +15,7 @@ module.exports = {
   transform: {
     '.+\\.(ts|tsx)&': 'ts-jest'
   },
+  clearMocks: true,
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
     '\\.scss$': 'identity-obj-proxy'

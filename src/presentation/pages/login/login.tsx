@@ -29,7 +29,6 @@ export const Login: React.FC<LoginProps> = ({ validation }) => {
       emailError: validation.validate('email', state.email),
       passwordError: validation.validate('password', state.password),
     });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email, state.password]);
 
