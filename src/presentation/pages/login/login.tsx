@@ -38,6 +38,9 @@ export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
+    if (state.isLoading) {
+      return;
+    }
     setState(currentState => ({ ...currentState, isLoading: true }));
     await authentication.auth({
       email: state.email,
