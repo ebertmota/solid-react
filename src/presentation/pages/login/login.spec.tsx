@@ -10,6 +10,44 @@ import { Validation } from '@/presentation/protocols';
 import { Authentication } from '@/domain/usecases';
 import { Login } from '..';
 
+const populateEmailField = (
+  component: RenderResult,
+  email = 'any_email',
+): void => {
+  const emailInput = component.getByTestId('email');
+  fireEvent.input(emailInput, { target: { value: email } });
+};
+
+const populatePasswordField = (
+  component: RenderResult,
+  password = 'any_password',
+): void => {
+  const passwordInput = component.getByTestId('password');
+  fireEvent.input(passwordInput, { target: { value: password } });
+};
+
+const simulateValidSubmit = (
+  component: RenderResult,
+  email = 'any_email',
+  password = 'any_password',
+): void => {
+  populateEmailField(component, email);
+  populatePasswordField(component, password);
+
+  const submitButton = component.getByTestId('submit') as HTMLButtonElement;
+  fireEvent.click(submitButton);
+};
+
+const simulateStatusForField = (
+  component: RenderResult,
+  fieldName: string,
+  validationError?: string,
+): void => {
+  const emailStatus = component.getByTestId(`${fieldName}-status`);
+  expect(emailStatus.title).toBe(validationError || 'Tudo certo!');
+  expect(emailStatus.textContent).toBe(validationError ? '🔴' : '🟢');
+};
+
 describe('Login component', () => {
   let error: string;
   let validation: MockProxy<Validation>;
@@ -43,27 +81,20 @@ describe('Login component', () => {
     const submitButton = component.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
 
-    const emailStatus = component.getByTestId('email-status');
-    expect(emailStatus.title).toBe(error);
-    expect(emailStatus.textContent).toBe('🔴');
-
-    const passwordStatus = component.getByTestId('password-status');
-    expect(passwordStatus.title).toBe(error);
-    expect(passwordStatus.textContent).toBe('🔴');
+    simulateStatusForField(component, 'email', error);
+    simulateStatusForField(component, 'password', error);
   });
 
   it('should call Validation with correct email', () => {
     const component = sut.render();
-    const emailInput = component.getByTestId('email');
-    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+    populateEmailField(component);
 
     expect(validation.validate).toHaveBeenCalledWith('email', 'any_email');
   });
 
   it('should call Validation with correct password', () => {
     const component = sut.render();
-    const passwordInput = component.getByTestId('password');
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+    populatePasswordField(component);
 
     expect(validation.validate).toHaveBeenCalledWith(
       'password',
@@ -75,59 +106,40 @@ describe('Login component', () => {
     validation.validate.mockReturnValue(error);
     const component = sut.render();
 
-    const emailInput = component.getByTestId('email');
-    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+    populateEmailField(component);
 
-    const emailStatus = component.getByTestId('email-status');
-
-    expect(emailStatus.title).toBe(error);
-    expect(emailStatus.textContent).toBe('🔴');
+    simulateStatusForField(component, 'email', error);
   });
 
   it('should show error if password Validation fails', () => {
     validation.validate.mockReturnValue(error);
     const component = sut.render();
 
-    const passwordInput = component.getByTestId('password');
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+    populatePasswordField(component);
 
-    const passwordStatus = component.getByTestId('password-status');
-
-    expect(passwordStatus.title).toBe(error);
-    expect(passwordStatus.textContent).toBe('🔴');
+    simulateStatusForField(component, 'password', error);
   });
 
   it('should show valid email state if Validation succeeds', () => {
     const component = sut.render();
 
-    const emailInput = component.getByTestId('email');
-    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+    populateEmailField(component);
 
-    const emailStatus = component.getByTestId('email-status');
-
-    expect(emailStatus.title).toBe('Tudo certo!');
-    expect(emailStatus.textContent).toBe('🟢');
+    simulateStatusForField(component, 'email');
   });
 
   it('should show valid password state if Validation succeeds', () => {
     const component = sut.render();
-    const passwordInput = component.getByTestId('password');
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
+    populatePasswordField(component);
 
-    const passwordStatus = component.getByTestId('password-status');
-
-    expect(passwordStatus.title).toBe('Tudo certo!');
-    expect(passwordStatus.textContent).toBe('🟢');
+    simulateStatusForField(component, 'password');
   });
 
   it('should enable submit button if form is valid', () => {
     const component = sut.render();
 
-    const passwordInput = component.getByTestId('password');
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
-
-    const emailInput = component.getByTestId('email');
-    fireEvent.input(emailInput, { target: { value: 'any_email' } });
+    populatePasswordField(component);
+    populateEmailField(component);
 
     const submitButton = component.getByTestId('submit') as HTMLButtonElement;
 
@@ -136,15 +148,7 @@ describe('Login component', () => {
 
   it('should show loading spinner on submit', () => {
     const component = sut.render();
-
-    const passwordInput = component.getByTestId('password');
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } });
-
-    const emailInput = component.getByTestId('email');
-    fireEvent.input(emailInput, { target: { value: 'any_email' } });
-
-    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
-    fireEvent.click(submitButton);
+    simulateValidSubmit(component);
 
     const spinner = component.getByTestId('spinner');
 
@@ -153,17 +157,10 @@ describe('Login component', () => {
 
   it('should call Authentication with correct params', () => {
     const component = sut.render();
-
-    const passwordInput = component.getByTestId('password');
-    const password = 'any_password';
-    fireEvent.input(passwordInput, { target: { value: password } });
-
-    const emailInput = component.getByTestId('email');
     const email = 'any_email';
-    fireEvent.input(emailInput, { target: { value: email } });
+    const password = 'any_password';
 
-    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
-    fireEvent.click(submitButton);
+    simulateValidSubmit(component, email, password);
 
     expect(authentication.auth).toHaveBeenCalledWith({
       email,
