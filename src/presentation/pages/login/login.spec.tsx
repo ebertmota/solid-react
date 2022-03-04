@@ -7,6 +7,7 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { mock, MockProxy } from 'jest-mock-extended';
+import 'jest-localstorage-mock';
 import { Validation } from '@/presentation/protocols';
 import { Authentication } from '@/domain/usecases';
 import { InvalidCredentialsError } from '@/domain/errors';
@@ -53,14 +54,23 @@ const simulateStatusForField = (
 describe('Login component', () => {
   let error: string;
   let validation: MockProxy<Validation>;
+  let accessToken: string;
   let authentication: MockProxy<Authentication>;
   let sut: { render: () => RenderResult };
 
   beforeAll(() => {
     error = 'Validation error';
+    accessToken = 'any_access_token';
     validation = mock();
     validation.validate.mockReturnValue(null);
     authentication = mock();
+    authentication.auth.mockResolvedValue({
+      accessToken,
+    });
+  });
+
+  beforeEach(() => {
+    localStorage.clear();
     sut = {
       render: () =>
         render(
@@ -201,5 +211,17 @@ describe('Login component', () => {
 
     expect(errorWrap.childElementCount).toBe(1);
     expect(defaultError.textContent).toBe(authError.message);
+  });
+
+  it('should add accessToken to localStorage on success', async () => {
+    const component = sut.render();
+
+    simulateValidSubmit(component);
+    await waitFor(() => component.getByTestId('form'));
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'accessToken',
+      accessToken,
+    );
   });
 });
