@@ -176,4 +176,14 @@ describe('Login component', () => {
 
     expect(authentication.auth).toHaveBeenCalledTimes(1);
   });
+
+  it('should not call Authentication if form is invalid', () => {
+    validation.validate.mockReturnValue(error);
+    const component = sut.render();
+
+    populateEmailField(component);
+    fireEvent.submit(component.getByTestId('form'));
+
+    expect(authentication.auth).toHaveBeenCalledTimes(0);
+  });
 });
