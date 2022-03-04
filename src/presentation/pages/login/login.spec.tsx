@@ -167,4 +167,13 @@ describe('Login component', () => {
       password,
     });
   });
+
+  it('should call Authentication only once', () => {
+    const component = sut.render();
+
+    simulateValidSubmit(component);
+    simulateValidSubmit(component);
+
+    expect(authentication.auth).toHaveBeenCalledTimes(1);
+  });
 });
