@@ -38,14 +38,22 @@ export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
-    if (state.isLoading || state.emailError || state.passwordError) {
-      return;
+    try {
+      if (state.isLoading || state.emailError || state.passwordError) {
+        return;
+      }
+      setState(currentState => ({ ...currentState, isLoading: true }));
+      await authentication.auth({
+        email: state.email,
+        password: state.password,
+      });
+    } catch (error) {
+      setState(currentState => ({
+        ...currentState,
+        isLoading: false,
+        defaultError: error.message,
+      }));
     }
-    setState(currentState => ({ ...currentState, isLoading: true }));
-    await authentication.auth({
-      email: state.email,
-      password: state.password,
-    });
   };
 
   return (
@@ -53,7 +61,7 @@ export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
       <LoginHeader />
       <Context.Provider value={{ state, setState }}>
         <form
-          data-testId="form"
+          data-testid="form"
           className={Styles.form}
           onSubmit={handleSubmit}
         >
