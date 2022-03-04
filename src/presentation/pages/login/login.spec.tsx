@@ -4,10 +4,12 @@ import {
   fireEvent,
   render,
   RenderResult,
+  waitFor,
 } from '@testing-library/react';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Validation } from '@/presentation/protocols';
 import { Authentication } from '@/domain/usecases';
+import { InvalidCredentialsError } from '@/domain/errors';
 import { Login } from '..';
 
 const populateEmailField = (
@@ -185,5 +187,19 @@ describe('Login component', () => {
     fireEvent.submit(component.getByTestId('form'));
 
     expect(authentication.auth).toHaveBeenCalledTimes(0);
+  });
+
+  it('should present error if Authentication fails', async () => {
+    const authError = new InvalidCredentialsError();
+    authentication.auth.mockRejectedValueOnce(authError);
+    const component = sut.render();
+
+    simulateValidSubmit(component);
+    const errorWrap = component.getByTestId('error-wrap');
+    await waitFor(() => errorWrap);
+    const defaultError = component.getByTestId('default-error');
+
+    expect(errorWrap.childElementCount).toBe(1);
+    expect(defaultError.textContent).toBe(authError.message);
   });
 });
