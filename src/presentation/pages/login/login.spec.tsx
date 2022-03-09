@@ -11,6 +11,8 @@ import 'jest-localstorage-mock';
 import { Validation } from '@/presentation/protocols';
 import { Authentication } from '@/domain/usecases';
 import { InvalidCredentialsError } from '@/domain/errors';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import { Login } from '..';
 
 const populateEmailField = (
@@ -56,7 +58,8 @@ describe('Login component', () => {
   let validation: MockProxy<Validation>;
   let accessToken: string;
   let authentication: MockProxy<Authentication>;
-  let sut: { render: () => RenderResult };
+  let history: MemoryHistory;
+  let makeSut: () => RenderResult;
 
   beforeAll(() => {
     error = 'Validation error';
@@ -67,16 +70,17 @@ describe('Login component', () => {
     authentication.auth.mockResolvedValue({
       accessToken,
     });
+    history = createMemoryHistory();
   });
 
   beforeEach(() => {
     localStorage.clear();
-    sut = {
-      render: () =>
-        render(
-          <Login validation={validation} authentication={authentication} />,
-        ),
-    };
+    makeSut = () =>
+      render(
+        <Router location={history.location} navigator={history}>
+          <Login validation={validation} authentication={authentication} />
+        </Router>,
+      );
   });
 
   afterEach(() => {
@@ -86,27 +90,27 @@ describe('Login component', () => {
 
   it('should start with initial state', () => {
     validation.validate.mockReturnValue(error);
-    const component = sut.render();
-    const errorWrap = component.getByTestId('error-wrap');
+    const sut = makeSut();
+    const errorWrap = sut.getByTestId('error-wrap');
     expect(errorWrap.childElementCount).toBe(0);
 
-    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
 
-    simulateStatusForField(component, 'email', error);
-    simulateStatusForField(component, 'password', error);
+    simulateStatusForField(sut, 'email', error);
+    simulateStatusForField(sut, 'password', error);
   });
 
   it('should call Validation with correct email', () => {
-    const component = sut.render();
-    populateEmailField(component);
+    const sut = makeSut();
+    populateEmailField(sut);
 
     expect(validation.validate).toHaveBeenCalledWith('email', 'any_email');
   });
 
   it('should call Validation with correct password', () => {
-    const component = sut.render();
-    populatePasswordField(component);
+    const sut = makeSut();
+    populatePasswordField(sut);
 
     expect(validation.validate).toHaveBeenCalledWith(
       'password',
@@ -116,63 +120,65 @@ describe('Login component', () => {
 
   it('should show error if email Validation fails', () => {
     validation.validate.mockReturnValue(error);
-    const component = sut.render();
+    const sut = makeSut();
+    populateEmailField(sut);
 
-    populateEmailField(component);
-
-    simulateStatusForField(component, 'email', error);
+    simulateStatusForField(sut, 'email', error);
   });
 
   it('should show error if password Validation fails', () => {
     validation.validate.mockReturnValue(error);
-    const component = sut.render();
+    const sut = makeSut();
 
-    populatePasswordField(component);
+    populatePasswordField(sut);
 
-    simulateStatusForField(component, 'password', error);
+    simulateStatusForField(sut, 'password', error);
   });
 
   it('should show valid email state if Validation succeeds', () => {
-    const component = sut.render();
+    const sut = makeSut();
 
-    populateEmailField(component);
+    populateEmailField(sut);
 
-    simulateStatusForField(component, 'email');
+    simulateStatusForField(sut, 'email');
   });
 
   it('should show valid password state if Validation succeeds', () => {
-    const component = sut.render();
-    populatePasswordField(component);
+    const sut = makeSut();
 
-    simulateStatusForField(component, 'password');
+    populatePasswordField(sut);
+
+    simulateStatusForField(sut, 'password');
   });
 
   it('should enable submit button if form is valid', () => {
-    const component = sut.render();
+    const sut = makeSut();
 
-    populatePasswordField(component);
-    populateEmailField(component);
+    populatePasswordField(sut);
+    populateEmailField(sut);
 
-    const submitButton = component.getByTestId('submit') as HTMLButtonElement;
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
 
     expect(submitButton.disabled).toBe(false);
   });
 
   it('should show loading spinner on submit', () => {
-    const component = sut.render();
-    simulateValidSubmit(component);
+    const sut = makeSut();
 
-    const spinner = component.getByTestId('spinner');
+    simulateValidSubmit(sut);
+
+    const spinner = sut.getByTestId('spinner');
 
     expect(spinner).toBeTruthy();
   });
 
   it('should call Authentication with correct params', () => {
-    const component = sut.render();
+    const sut = makeSut();
+
     const email = 'any_email';
     const password = 'any_password';
 
-    simulateValidSubmit(component, email, password);
+    simulateValidSubmit(sut, email, password);
 
     expect(authentication.auth).toHaveBeenCalledWith({
       email,
@@ -181,20 +187,20 @@ describe('Login component', () => {
   });
 
   it('should call Authentication only once', () => {
-    const component = sut.render();
+    const sut = makeSut();
 
-    simulateValidSubmit(component);
-    simulateValidSubmit(component);
+    simulateValidSubmit(sut);
+    simulateValidSubmit(sut);
 
     expect(authentication.auth).toHaveBeenCalledTimes(1);
   });
 
   it('should not call Authentication if form is invalid', () => {
     validation.validate.mockReturnValue(error);
-    const component = sut.render();
+    const sut = makeSut();
 
-    populateEmailField(component);
-    fireEvent.submit(component.getByTestId('form'));
+    populateEmailField(sut);
+    fireEvent.submit(sut.getByTestId('form'));
 
     expect(authentication.auth).toHaveBeenCalledTimes(0);
   });
@@ -202,26 +208,35 @@ describe('Login component', () => {
   it('should present error if Authentication fails', async () => {
     const authError = new InvalidCredentialsError();
     authentication.auth.mockRejectedValueOnce(authError);
-    const component = sut.render();
+    const sut = makeSut();
 
-    simulateValidSubmit(component);
-    const errorWrap = component.getByTestId('error-wrap');
+    simulateValidSubmit(sut);
+    const errorWrap = sut.getByTestId('error-wrap');
     await waitFor(() => errorWrap);
-    const defaultError = component.getByTestId('default-error');
+    const defaultError = sut.getByTestId('default-error');
 
     expect(errorWrap.childElementCount).toBe(1);
     expect(defaultError.textContent).toBe(authError.message);
   });
 
   it('should add accessToken to localStorage on success', async () => {
-    const component = sut.render();
+    const sut = makeSut();
 
-    simulateValidSubmit(component);
-    await waitFor(() => component.getByTestId('form'));
+    simulateValidSubmit(sut);
+    await waitFor(() => sut.getByTestId('form'));
 
     expect(localStorage.setItem).toHaveBeenCalledWith(
       'accessToken',
       accessToken,
     );
+  });
+
+  it('should redirect to SignUp page', async () => {
+    const sut = makeSut();
+
+    const signup = sut.getByTestId('signup');
+    fireEvent.click(signup);
+
+    expect(history.location.pathname).toBe('/signup');
   });
 });
