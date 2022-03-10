@@ -70,7 +70,9 @@ describe('Login component', () => {
     authentication.auth.mockResolvedValue({
       accessToken,
     });
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: ['/login'],
+    });
   });
 
   beforeEach(() => {
@@ -229,6 +231,7 @@ describe('Login component', () => {
       'accessToken',
       accessToken,
     );
+    expect(history.location.pathname).toBe('/');
   });
 
   it('should redirect to SignUp page', async () => {
@@ -236,7 +239,6 @@ describe('Login component', () => {
 
     const signup = sut.getByTestId('signup');
     fireEvent.click(signup);
-
     expect(history.location.pathname).toBe('/signup');
   });
 });
