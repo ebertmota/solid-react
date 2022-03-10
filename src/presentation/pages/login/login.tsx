@@ -8,7 +8,7 @@ import {
 import Context from '@/presentation/contexts/form/form-context';
 import { Validation } from '@/presentation/protocols';
 import { Authentication } from '@/domain/usecases';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Styles from './login-styles.scss';
 
 type LoginProps = {
@@ -17,6 +17,7 @@ type LoginProps = {
 };
 
 export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
+  const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
     email: '',
@@ -50,6 +51,9 @@ export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
       });
 
       localStorage.setItem('accessToken', account.accessToken);
+      navigate('/', {
+        replace: true,
+      });
     } catch (error) {
       setState(currentState => ({
         ...currentState,
