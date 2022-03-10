@@ -43,7 +43,7 @@ const simulateValidSubmit = (
   fireEvent.click(submitButton);
 };
 
-const simulateStatusForField = (
+const testStatusForField = (
   component: RenderResult,
   fieldName: string,
   validationError?: string,
@@ -51,6 +51,11 @@ const simulateStatusForField = (
   const emailStatus = component.getByTestId(`${fieldName}-status`);
   expect(emailStatus.title).toBe(validationError || 'Tudo certo!');
   expect(emailStatus.textContent).toBe(validationError ? '🔴' : '🟢');
+};
+
+const testErrorWrapChildCount = (sut: RenderResult, count: number): void => {
+  const errorWrap = sut.getByTestId('error-wrap');
+  expect(errorWrap.childElementCount).toBe(count);
 };
 
 describe('Login component', () => {
@@ -93,14 +98,13 @@ describe('Login component', () => {
   it('should start with initial state', () => {
     validation.validate.mockReturnValue(error);
     const sut = makeSut();
-    const errorWrap = sut.getByTestId('error-wrap');
-    expect(errorWrap.childElementCount).toBe(0);
+    testErrorWrapChildCount(sut, 0);
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
 
-    simulateStatusForField(sut, 'email', error);
-    simulateStatusForField(sut, 'password', error);
+    testStatusForField(sut, 'email', error);
+    testStatusForField(sut, 'password', error);
   });
 
   it('should call Validation with correct email', () => {
@@ -125,7 +129,7 @@ describe('Login component', () => {
     const sut = makeSut();
     populateEmailField(sut);
 
-    simulateStatusForField(sut, 'email', error);
+    testStatusForField(sut, 'email', error);
   });
 
   it('should show error if password Validation fails', () => {
@@ -134,7 +138,7 @@ describe('Login component', () => {
 
     populatePasswordField(sut);
 
-    simulateStatusForField(sut, 'password', error);
+    testStatusForField(sut, 'password', error);
   });
 
   it('should show valid email state if Validation succeeds', () => {
@@ -142,7 +146,7 @@ describe('Login component', () => {
 
     populateEmailField(sut);
 
-    simulateStatusForField(sut, 'email');
+    testStatusForField(sut, 'email');
   });
 
   it('should show valid password state if Validation succeeds', () => {
@@ -150,7 +154,7 @@ describe('Login component', () => {
 
     populatePasswordField(sut);
 
-    simulateStatusForField(sut, 'password');
+    testStatusForField(sut, 'password');
   });
 
   it('should enable submit button if form is valid', () => {
@@ -217,7 +221,7 @@ describe('Login component', () => {
     await waitFor(() => errorWrap);
     const defaultError = sut.getByTestId('default-error');
 
-    expect(errorWrap.childElementCount).toBe(1);
+    testErrorWrapChildCount(sut, 1);
     expect(defaultError.textContent).toBe(authError.message);
   });
 
