@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import { mock, MockProxy } from 'jest-mock-extended';
 import 'jest-localstorage-mock';
-import { Validation } from '@/presentation/protocols';
+import { Validation } from '@/application/protocols';
 import { Authentication } from '@/domain/usecases';
 import { InvalidCredentialsError } from '@/domain/errors';
 import { Router } from 'react-router-dom';

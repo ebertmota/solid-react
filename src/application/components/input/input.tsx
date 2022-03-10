@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react';
-import Context from '@/presentation/contexts/form/form-context';
+import Context from '@/application/contexts/form/form-context';
 import Styles from './input-styles.scss';
 
 type Props = React.DetailedHTMLProps<

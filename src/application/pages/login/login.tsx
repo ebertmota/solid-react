@@ -4,9 +4,9 @@ import {
   FormStatus,
   Footer,
   LoginHeader,
-} from '@/presentation/components';
-import Context from '@/presentation/contexts/form/form-context';
-import { Validation } from '@/presentation/protocols';
+} from '@/application/components';
+import Context from '@/application/contexts/form/form-context';
+import { Validation } from '@/application/protocols';
 import { Authentication } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
 import Styles from './login-styles.scss';
