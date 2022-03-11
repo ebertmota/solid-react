@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Context from '@/application/contexts/form/form-context';
-import { Spinner } from '../spinner/spinner';
+import { Spinner } from '@/application/components/spinner/spinner';
 import Styles from './form-status-styles.scss';
 
 export const FormStatus: React.FC = () => {

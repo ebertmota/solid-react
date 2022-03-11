@@ -1,5 +1,5 @@
-import { RequiredFieldError } from '../errors';
-import { RequiredFieldValidation } from './required-field-validation';
+import { RequiredFieldError } from '@/application/validation/errors';
+import { RequiredFieldValidation } from './required-field';
 
 describe('RequiredFieldValidation', () => {
   it('should return an error if field is empty', () => {

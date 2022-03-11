@@ -4,8 +4,8 @@ import { mockAuthenticationCredentials, mockAccountModel } from '@/domain/test';
 import { AccountModel } from '@/domain/models';
 import { AuthenticationCredentials } from '@/domain/usecases';
 import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors';
+import { HttpPostClientSpy } from '@/data/test';
 import { RemoteAuthentication } from './remote-authentication';
-import { HttpPostClientSpy } from '../../test';
 
 describe('RemoteAuthentication', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
