@@ -18,4 +18,12 @@ describe('EmailValidation', () => {
 
     expect(error).toBeFalsy();
   });
+
+  it('should return falsy if email is empty', () => {
+    const sut = new EmailValidation('email');
+
+    const error = sut.validate('');
+
+    expect(error).toBeFalsy();
+  });
 });
