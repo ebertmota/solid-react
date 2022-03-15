@@ -5,19 +5,25 @@ import { ValidationComposite } from './composite';
 describe('ValidationComposite', () => {
   let fieldValidation: MockProxy<FieldValidation>;
   let anotherFieldValidation: MockProxy<FieldValidation>;
+  let field: string;
+  let value: string;
 
   beforeAll(() => {
+    field = 'any_field';
+    value = 'any_value';
     fieldValidation = mock();
-    fieldValidation.field = 'any_field';
+    fieldValidation.field = field;
+    fieldValidation.validate.mockReturnValue(null);
     anotherFieldValidation = mock<FieldValidation>();
-    anotherFieldValidation.field = 'any_field';
+    anotherFieldValidation.field = field;
+    anotherFieldValidation.validate.mockReturnValue(null);
   });
 
   it('should return error if any validation fails', () => {
     anotherFieldValidation.validate.mockReturnValueOnce(new Error('any_error'));
     const sut = new ValidationComposite([anotherFieldValidation]);
 
-    const result = sut.validate('any_field', 'any_value');
+    const result = sut.validate(field, value);
 
     expect(result).toBe('any_error');
   });
@@ -32,8 +38,16 @@ describe('ValidationComposite', () => {
       fieldValidation,
     ]);
 
-    const result = sut.validate('any_field', 'any_value');
+    const result = sut.validate(field, value);
 
     expect(result).toBe('first_error');
+  });
+
+  it('should return falsy on success', () => {
+    const sut = new ValidationComposite([anotherFieldValidation]);
+
+    const result = sut.validate(field, value);
+
+    expect(result).toBeFalsy();
   });
 });

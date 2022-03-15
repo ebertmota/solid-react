@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { Validation } from '@/application/protocols';
 import { FieldValidation } from '@/application/validation/protocols';
 
@@ -9,7 +10,6 @@ export class ValidationComposite implements Validation {
       validator => validator.field === fieldName,
     );
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const validator of validators) {
       const error = validator.validate(fieldValue);
       if (error) {
