@@ -1,4 +1,7 @@
-import { RequiredFieldValidation } from '@/application/validation/validators/required-field/required-field';
+import {
+  RequiredFieldValidation,
+  EmailValidation,
+} from '@/application/validation/validators';
 import { ValidationBuilder } from './builder';
 
 describe('ValidationBuilder', () => {
@@ -8,10 +11,17 @@ describe('ValidationBuilder', () => {
     sut = ValidationBuilder;
   });
 
-  it('should return RequiredFieldValidation on required call', () => {
+  it('should return RequiredFieldValidation when required is used', () => {
     const field = 'any_field';
     const validations = sut.field(field).required().build();
 
     expect(validations).toEqual([new RequiredFieldValidation(field)]);
+  });
+
+  it('should return EmailValidation when email is used', () => {
+    const field = 'any_field';
+    const validations = sut.field(field).email().build();
+
+    expect(validations).toEqual([new EmailValidation(field)]);
   });
 });
