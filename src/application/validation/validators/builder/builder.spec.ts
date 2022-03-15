@@ -1,6 +1,7 @@
 import {
   RequiredFieldValidation,
   EmailValidation,
+  MinLengthValidation,
 } from '@/application/validation/validators';
 import { ValidationBuilder } from './builder';
 
@@ -11,17 +12,24 @@ describe('ValidationBuilder', () => {
     sut = ValidationBuilder;
   });
 
-  it('should return RequiredFieldValidation when required is used', () => {
+  it('should return RequiredFieldValidation when required helper is used', () => {
     const field = 'any_field';
     const validations = sut.field(field).required().build();
 
     expect(validations).toEqual([new RequiredFieldValidation(field)]);
   });
 
-  it('should return EmailValidation when email is used', () => {
+  it('should return EmailValidation when email helper is used', () => {
     const field = 'any_field';
     const validations = sut.field(field).email().build();
 
     expect(validations).toEqual([new EmailValidation(field)]);
+  });
+
+  it('should return MinLengthValidation when min helper is used', () => {
+    const field = 'any_field';
+    const validations = sut.field(field).min(5).build();
+
+    expect(validations).toEqual([new MinLengthValidation(field, 5)]);
   });
 });
