@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
 import Context from '@/application/contexts/form/form-context';
 import { Input } from './input';
 
@@ -18,5 +18,11 @@ describe('Input component', () => {
     const input = sut.getByTestId('input') as HTMLInputElement;
 
     expect(input.readOnly).toBe(true);
+  });
+  it('should disable readOnly on focus', () => {
+    const input = sut.getByTestId('input') as HTMLInputElement;
+    fireEvent.focus(input);
+
+    expect(input.readOnly).toBe(false);
   });
 });
