@@ -29,6 +29,7 @@
           "group": ["../*"]
         }]
       }],
+      "@typescript-eslint/no-namespace": "off",
       "react/prop-types": "off",
       "no-shadow": "off",
       "@typescript-eslint/no-shadow": "error",
