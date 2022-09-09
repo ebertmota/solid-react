@@ -28,4 +28,13 @@ describe('LocalSaveAccessToken', () => {
     });
     expect(setStorage.set).toHaveBeenCalledTimes(1);
   });
+
+  it('should rethrow if setStorage throws', async () => {
+    const error = new Error('fails');
+    setStorage.set.mockRejectedValueOnce(error);
+
+    const promise = sut.save(sutParams);
+
+    expect(promise).rejects.toThrow(error);
+  });
 });
