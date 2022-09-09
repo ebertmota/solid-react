@@ -7,9 +7,8 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { mock, MockProxy } from 'jest-mock-extended';
-import 'jest-localstorage-mock';
 import { Validation } from '@/application/protocols';
-import { Authentication } from '@/domain/usecases';
+import { Authentication, SaveAccessToken } from '@/domain/usecases';
 import { InvalidCredentialsError } from '@/domain/errors';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, MemoryHistory } from 'history';
@@ -63,6 +62,7 @@ describe('Login component', () => {
   let validation: MockProxy<Validation>;
   let accessToken: string;
   let authentication: MockProxy<Authentication>;
+  let saveAccessToken: MockProxy<SaveAccessToken>;
   let history: MemoryHistory;
   let makeSut: () => RenderResult;
 
@@ -75,17 +75,21 @@ describe('Login component', () => {
     authentication.auth.mockResolvedValue({
       accessToken,
     });
+    saveAccessToken = mock();
     history = createMemoryHistory({
       initialEntries: ['/login'],
     });
   });
 
   beforeEach(() => {
-    localStorage.clear();
     makeSut = () =>
       render(
         <Router location={history.location} navigator={history}>
-          <Login validation={validation} authentication={authentication} />
+          <Login
+            validation={validation}
+            authentication={authentication}
+            saveAccessToken={saveAccessToken}
+          />
         </Router>,
       );
   });
@@ -225,16 +229,15 @@ describe('Login component', () => {
     expect(defaultError.textContent).toBe(authError.message);
   });
 
-  it('should add accessToken to localStorage on success', async () => {
+  it('should call SaveAccessToken on success', async () => {
     const sut = makeSut();
 
     simulateValidSubmit(sut);
     await waitFor(() => sut.getByTestId('form'));
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'accessToken',
+    expect(saveAccessToken.save).toHaveBeenCalledWith({
       accessToken,
-    );
+    });
     expect(history.location.pathname).toBe('/');
   });
 
