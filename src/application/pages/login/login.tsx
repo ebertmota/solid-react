@@ -7,16 +7,21 @@ import {
 } from '@/application/components';
 import Context from '@/application/contexts/form/form-context';
 import { Validation } from '@/application/protocols';
-import { Authentication } from '@/domain/usecases';
+import { Authentication, SaveAccessToken } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
 import Styles from './login-styles.scss';
 
 type LoginProps = {
   validation: Validation;
   authentication: Authentication;
+  saveAccessToken: SaveAccessToken;
 };
 
-export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
+export const Login: React.FC<LoginProps> = ({
+  validation,
+  authentication,
+  saveAccessToken,
+}) => {
   const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
@@ -50,7 +55,9 @@ export const Login: React.FC<LoginProps> = ({ validation, authentication }) => {
         password: state.password,
       });
 
-      localStorage.setItem('accessToken', account.accessToken);
+      await saveAccessToken.save({
+        accessToken: account.accessToken,
+      });
       navigate('/', {
         replace: true,
       });
