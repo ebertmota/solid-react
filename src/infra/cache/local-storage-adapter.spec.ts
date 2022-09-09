@@ -26,4 +26,15 @@ describe('LocalStorageAdapter', () => {
       sutParams.value,
     );
   });
+
+  it('should rethrow if localStorage throws', async () => {
+    const error = new Error('localStorage fails');
+    jest.spyOn(localStorage, 'setItem').mockImplementationOnce(() => {
+      throw error;
+    });
+
+    const promise = sut.set(sutParams);
+
+    expect(promise).rejects.toThrow(error);
+  });
 });
