@@ -24,6 +24,7 @@
         "prettier"
     ],
     "rules": {
+      "react/no-unused-prop-types": "off",
       "no-restricted-imports": ["error", {
         "patterns": [{
           "group": ["../*"]
