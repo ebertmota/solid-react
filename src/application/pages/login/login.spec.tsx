@@ -241,6 +241,22 @@ describe('Login component', () => {
     expect(history.location.pathname).toBe('/');
   });
 
+  it('should present error if SaveAccessToken fails', async () => {
+    const saveAccessTokenError = new Error('saveAccessToken fails');
+    saveAccessToken.save.mockImplementationOnce(() => {
+      throw saveAccessTokenError;
+    });
+    const sut = makeSut();
+
+    simulateValidSubmit(sut);
+    const errorWrap = sut.getByTestId('error-wrap');
+    await waitFor(() => errorWrap);
+    const defaultError = sut.getByTestId('default-error');
+
+    testErrorWrapChildCount(sut, 1);
+    expect(defaultError.textContent).toBe(saveAccessTokenError.message);
+  });
+
   it('should redirect to SignUp page', async () => {
     const sut = makeSut();
 
