@@ -4,6 +4,7 @@ import {
   HttpResponse,
   HttpStatusCode,
 } from '@/data/protocols/http';
+import faker from 'faker';
 
 export class HttpPostClientSpy<T, R> implements HttpPostClient<T, R> {
   url?: string;
@@ -20,3 +21,9 @@ export class HttpPostClientSpy<T, R> implements HttpPostClient<T, R> {
     return Promise.resolve(this.response);
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const mockPostRequest = (): HttpPostParams<any> => ({
+  url: faker.internet.url(),
+  body: faker.random.objectElement(),
+});
