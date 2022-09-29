@@ -12,6 +12,7 @@ import { Authentication, SaveAccessToken } from '@/domain/usecases';
 import { InvalidCredentialsError } from '@/domain/errors';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, MemoryHistory } from 'history';
+import { Helper } from '@/tests/helpers';
 import { Login } from '..';
 
 const populateEmailField = (
@@ -40,21 +41,6 @@ const simulateValidSubmit = (
 
   const submitButton = component.getByTestId('submit') as HTMLButtonElement;
   fireEvent.click(submitButton);
-};
-
-const testStatusForField = (
-  component: RenderResult,
-  fieldName: string,
-  validationError?: string,
-): void => {
-  const emailStatus = component.getByTestId(`${fieldName}-status`);
-  expect(emailStatus.title).toBe(validationError || 'Tudo certo!');
-  expect(emailStatus.textContent).toBe(validationError ? '🔴' : '🟢');
-};
-
-const testErrorWrapChildCount = (sut: RenderResult, count: number): void => {
-  const errorWrap = sut.getByTestId('error-wrap');
-  expect(errorWrap.childElementCount).toBe(count);
 };
 
 describe('Login component', () => {
@@ -102,13 +88,25 @@ describe('Login component', () => {
   it('should start with initial state', () => {
     validation.validate.mockReturnValue(error);
     const sut = makeSut();
-    testErrorWrapChildCount(sut, 0);
+    Helper.testChildCount({
+      sut,
+      fieldName: 'error-wrap',
+      count: 0,
+    });
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
 
-    testStatusForField(sut, 'email', error);
-    testStatusForField(sut, 'password', error);
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'email',
+      validationError: error,
+    });
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'password',
+      validationError: error,
+    });
   });
 
   it('should call Validation with correct email', () => {
@@ -133,7 +131,11 @@ describe('Login component', () => {
     const sut = makeSut();
     populateEmailField(sut);
 
-    testStatusForField(sut, 'email', error);
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'email',
+      validationError: error,
+    });
   });
 
   it('should show error if password Validation fails', () => {
@@ -142,7 +144,11 @@ describe('Login component', () => {
 
     populatePasswordField(sut);
 
-    testStatusForField(sut, 'password', error);
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'password',
+      validationError: error,
+    });
   });
 
   it('should show valid email state if Validation succeeds', () => {
@@ -150,7 +156,10 @@ describe('Login component', () => {
 
     populateEmailField(sut);
 
-    testStatusForField(sut, 'email');
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'email',
+    });
   });
 
   it('should show valid password state if Validation succeeds', () => {
@@ -158,7 +167,10 @@ describe('Login component', () => {
 
     populatePasswordField(sut);
 
-    testStatusForField(sut, 'password');
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'password',
+    });
   });
 
   it('should enable submit button if form is valid', () => {
@@ -225,7 +237,11 @@ describe('Login component', () => {
     await waitFor(() => errorWrap);
     const defaultError = sut.getByTestId('default-error');
 
-    testErrorWrapChildCount(sut, 1);
+    Helper.testChildCount({
+      sut,
+      fieldName: 'error-wrap',
+      count: 1,
+    });
     expect(defaultError.textContent).toBe(authError.message);
   });
 
@@ -253,7 +269,11 @@ describe('Login component', () => {
     await waitFor(() => errorWrap);
     const defaultError = sut.getByTestId('default-error');
 
-    testErrorWrapChildCount(sut, 1);
+    Helper.testChildCount({
+      sut,
+      fieldName: 'error-wrap',
+      count: 1,
+    });
     expect(defaultError.textContent).toBe(saveAccessTokenError.message);
   });
 
