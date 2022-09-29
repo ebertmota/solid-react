@@ -1,10 +1,6 @@
 import React from 'react';
 import { render, RenderResult } from '@testing-library/react';
-import {
-  testButtonIsDisabled,
-  testChildCount,
-  testStatusForField,
-} from '@/tests/helpers';
+import { Helper } from '@/tests/helpers';
 import { SignUp } from './signUp';
 
 describe('SignUp component', () => {
@@ -18,32 +14,32 @@ describe('SignUp component', () => {
     const sut = makeSut();
 
     const validationError = 'Campo obrigatório';
-    testChildCount({
+    Helper.testChildCount({
       sut,
       fieldName: 'error-wrap',
       count: 0,
     });
-    testButtonIsDisabled({
+    Helper.testButtonIsDisabled({
       sut,
       fieldName: 'submit',
       isDisabled: true,
     });
-    testStatusForField({
+    Helper.testStatusForField({
       sut,
       fieldName: 'name',
       validationError,
     });
-    testStatusForField({
+    Helper.testStatusForField({
       sut,
       fieldName: 'email',
       validationError,
     });
-    testStatusForField({
+    Helper.testStatusForField({
       sut,
       fieldName: 'password',
       validationError,
     });
-    testStatusForField({
+    Helper.testStatusForField({
       sut,
       fieldName: 'passwordConfirmation',
       validationError,
