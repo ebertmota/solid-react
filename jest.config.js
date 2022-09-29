@@ -1,11 +1,22 @@
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  clearMocks: true,
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
   globals: {
     "ts-jest": {
       isolatedModules: true
     }
   },
-  preset: 'ts-jest',
-  roots: ['<rootDir>/src'],
+  moduleNameMapper: {
+    '@/tests(.+)': '<rootDir>/tests/$1',
+    '@/(.+)': '<rootDir>/src/$1',
+    '\\.scss$': 'identity-obj-proxy'
+  },
+  transform: {
+    '.+\\.(ts|tsx)&': 'ts-jest'
+  },
+  coverageDirectory: 'coverage',
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}',
     '!<rootDir>/src/main/**/*',
@@ -14,14 +25,4 @@ module.exports = {
     '!<rootDir>/src/**/**/index.ts',
     '!**/*.d.ts'
   ],
-  coverageDirectory: 'coverage',
-  testEnvironment: 'jsdom',
-  transform: {
-    '.+\\.(ts|tsx)&': 'ts-jest'
-  },
-  clearMocks: true,
-  moduleNameMapper: {
-    '@/(.*)': '<rootDir>/src/$1',
-    '\\.scss$': 'identity-obj-proxy'
-  }
 }

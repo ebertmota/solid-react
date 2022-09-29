@@ -10,10 +10,11 @@
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",
-    "rootDir": "src",
+    "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@/tests/*": ["../tests/*"]
     },
     "plugins": [{
       "name": "typescript-plugin-css-modules"
@@ -23,6 +24,7 @@
   },
   "include": [
     "src",
+    "tests",
     "src/config/scss.d.ts"
   ]
 }
