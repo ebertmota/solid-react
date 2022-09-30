@@ -46,7 +46,7 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'email',
-      value: 'Campo obrigatório',
+      value: '',
     });
     Helper.testStatusForField({
       sut,
@@ -72,6 +72,22 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'name',
+      value: validationError,
+    });
+  });
+
+  it('should show an error if email Validation fails', () => {
+    validation.validate.mockReturnValue(validationError);
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'email',
       value: validationError,
     });
   });
