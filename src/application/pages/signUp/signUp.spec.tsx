@@ -26,6 +26,9 @@ describe('SignUp component', () => {
   });
 
   it('should start with initial state', () => {
+    const initialError = 'any_initial_error';
+    validation.validate.mockReturnValue(initialError);
+
     const sut = makeSut();
 
     Helper.testChildCount({
@@ -41,22 +44,22 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'name',
-      value: '',
+      value: initialError,
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'email',
-      value: '',
+      value: initialError,
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'password',
-      value: '',
+      value: initialError,
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'passwordConfirmation',
-      value: '',
+      value: initialError,
     });
   });
 
@@ -177,6 +180,33 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'passwordConfirmation',
+    });
+  });
+
+  it('should enable submit button if form is valid', () => {
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'name',
+    });
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+    });
+    Helper.populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+
+    Helper.testButtonIsDisabled({
+      sut,
+      fieldName: 'submit',
+      isDisabled: false,
     });
   });
 });
