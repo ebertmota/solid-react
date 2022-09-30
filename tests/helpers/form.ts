@@ -1,11 +1,11 @@
-import { RenderResult } from '@testing-library/react';
+import { fireEvent, RenderResult } from '@testing-library/react';
 
-type TestHelper = {
+type FormHelper = {
   sut: RenderResult;
   fieldName: string;
 };
 
-type TestChildCountInput = TestHelper & {
+type TestChildCountInput = FormHelper & {
   count: number;
 };
 
@@ -15,7 +15,7 @@ export const testChildCount = (input: TestChildCountInput): void => {
   expect(element.childElementCount).toBe(count);
 };
 
-type TestButtonIsDisabledInput = TestHelper & {
+type TestButtonIsDisabledInput = FormHelper & {
   isDisabled: boolean;
 };
 
@@ -27,15 +27,25 @@ export const testButtonIsDisabled = (
   expect(element.disabled).toBe(isDisabled);
 };
 
-type TestStatusForFieldInput = TestHelper & {
-  validationError?: string;
+type TestStatusForFieldInput = FormHelper & {
+  value?: string;
 };
 
 export const testStatusForField = (input: TestStatusForFieldInput): void => {
-  const { sut, fieldName, validationError } = input;
-
+  const { sut, fieldName, value } = input;
+  console.log({ value });
   const fieldStatus = sut.getByTestId(`${fieldName}-status`);
 
-  expect(fieldStatus.title).toBe(validationError || 'Tudo certo!');
-  expect(fieldStatus.textContent).toBe(validationError ? '🔴' : '🟢');
+  expect(fieldStatus.title).toBe(value || 'Tudo certo!');
+  expect(fieldStatus.textContent).toBe(value ? '🔴' : '🟢');
+};
+
+type PopulateFieldInput = FormHelper & {
+  value?: string;
+};
+
+export const populateField = (input: PopulateFieldInput): void => {
+  const { sut, fieldName, value } = input;
+  const field = sut.getByTestId(fieldName);
+  fireEvent.input(field, { target: { value: value || 'any_value' } });
 };

@@ -1,19 +1,33 @@
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
+import { cleanup, render, RenderResult } from '@testing-library/react';
 import { Helper } from '@/tests/helpers';
+import { mock, MockProxy } from 'jest-mock-extended';
+import { Validation } from '@/application/protocols';
 import { SignUp } from './signUp';
 
 describe('SignUp component', () => {
+  let validationError: string;
+  let validation: MockProxy<Validation>;
   let makeSut: () => RenderResult;
 
+  beforeAll(() => {
+    validationError = 'Validation error';
+    validation = mock();
+    validation.validate.mockReturnValue(null);
+  });
+
   beforeEach(() => {
-    makeSut = () => render(<SignUp />);
+    makeSut = () => render(<SignUp validation={validation} />);
+  });
+
+  afterEach(() => {
+    cleanup();
+    validation.validate.mockReturnValue(null);
   });
 
   it('should start with initial state', () => {
     const sut = makeSut();
 
-    const validationError = 'Campo obrigatório';
     Helper.testChildCount({
       sut,
       fieldName: 'error-wrap',
@@ -27,22 +41,38 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'name',
-      validationError,
+      value: '',
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'email',
-      validationError,
+      value: 'Campo obrigatório',
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'password',
-      validationError,
+      value: 'Campo obrigatório',
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'passwordConfirmation',
-      validationError,
+      value: 'Campo obrigatório',
+    });
+  });
+
+  it('should show an error if name Validation fails', () => {
+    validation.validate.mockReturnValue(validationError);
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'name',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'name',
+      value: validationError,
     });
   });
 });
