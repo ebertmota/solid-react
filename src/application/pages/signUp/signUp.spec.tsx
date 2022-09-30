@@ -56,7 +56,7 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'passwordConfirmation',
-      value: 'Campo obrigatório',
+      value: '',
     });
   });
 
@@ -104,6 +104,22 @@ describe('SignUp component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'password',
+      value: validationError,
+    });
+  });
+
+  it('should show an error if passwordConfirmation Validation fails', () => {
+    validation.validate.mockReturnValue(validationError);
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'passwordConfirmation',
       value: validationError,
     });
   });
