@@ -100,12 +100,12 @@ describe('Login component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'email',
-      validationError: error,
+      value: error,
     });
     Helper.testStatusForField({
       sut,
       fieldName: 'password',
-      validationError: error,
+      value: error,
     });
   });
 
@@ -134,7 +134,7 @@ describe('Login component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'email',
-      validationError: error,
+      value: error,
     });
   });
 
@@ -147,7 +147,7 @@ describe('Login component', () => {
     Helper.testStatusForField({
       sut,
       fieldName: 'password',
-      validationError: error,
+      value: error,
     });
   });
 
