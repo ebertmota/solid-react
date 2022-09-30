@@ -42,6 +42,13 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.name, state.email, state.password, state.passwordConfirmation]);
 
+  const buttonIsDisabled = Boolean(
+    state.nameError ||
+      state.emailError ||
+      state.passwordError ||
+      state.passwordConfirmationError,
+  );
+
   return (
     <div className={Styles.signUp}>
       <LoginHeader />
@@ -62,7 +69,7 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
           />
           <button
             data-testid="submit"
-            disabled
+            disabled={buttonIsDisabled}
             className={Styles.submit}
             type="submit"
           >
