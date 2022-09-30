@@ -33,7 +33,6 @@ type TestStatusForFieldInput = FormHelper & {
 
 export const testStatusForField = (input: TestStatusForFieldInput): void => {
   const { sut, fieldName, value } = input;
-  console.log({ value });
   const fieldStatus = sut.getByTestId(`${fieldName}-status`);
 
   expect(fieldStatus.title).toBe(value || 'Tudo certo!');
