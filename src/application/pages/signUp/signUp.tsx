@@ -19,10 +19,11 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
     name: '',
     email: '',
     password: '',
+    passwordConfirmation: '',
     nameError: '',
     emailError: '',
     passwordError: '',
-    passwordConfirmationError: 'Campo obrigatório',
+    passwordConfirmationError: '',
     defaultError: '',
   });
 
@@ -32,10 +33,14 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
       nameError: validation.validate('name', state.nameError),
       emailError: validation.validate('email', state.emailError),
       passwordError: validation.validate('password', state.passwordError),
+      passwordConfirmationError: validation.validate(
+        'passwordConfirmation',
+        state.passwordConfirmationError,
+      ),
     }));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.name, state.email, state.password]);
+  }, [state.name, state.email, state.password, state.passwordConfirmation]);
 
   return (
     <div className={Styles.signUp}>
