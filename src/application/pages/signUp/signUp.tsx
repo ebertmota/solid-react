@@ -17,8 +17,9 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
+    email: '',
     nameError: '',
-    emailError: 'Campo obrigatório',
+    emailError: '',
     passwordError: 'Campo obrigatório',
     passwordConfirmationError: 'Campo obrigatório',
     defaultError: '',
@@ -28,10 +29,11 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
     setState(currentState => ({
       ...currentState,
       nameError: validation.validate('name', state.nameError),
+      emailError: validation.validate('email', state.emailError),
     }));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.name]);
+  }, [state.name, state.email]);
 
   return (
     <div className={Styles.signUp}>
