@@ -123,4 +123,60 @@ describe('SignUp component', () => {
       value: validationError,
     });
   });
+
+  it('should show valid name state if Validation succeeds', () => {
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'name',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'name',
+    });
+  });
+
+  it('should show valid email state if Validation succeeds', () => {
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'email',
+    });
+  });
+
+  it('should show valid password state if Validation succeeds', () => {
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'password',
+    });
+  });
+
+  it('should show valid passwordConfirmation state if Validation succeeds', () => {
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+
+    Helper.testStatusForField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+  });
 });
