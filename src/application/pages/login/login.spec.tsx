@@ -15,29 +15,21 @@ import { createMemoryHistory, MemoryHistory } from 'history';
 import { Helper } from '@/tests/helpers';
 import { Login } from '..';
 
-const populateEmailField = (
-  component: RenderResult,
-  email = 'any_email',
-): void => {
-  const emailInput = component.getByTestId('email');
-  fireEvent.input(emailInput, { target: { value: email } });
-};
-
-const populatePasswordField = (
-  component: RenderResult,
-  password = 'any_password',
-): void => {
-  const passwordInput = component.getByTestId('password');
-  fireEvent.input(passwordInput, { target: { value: password } });
-};
-
 const simulateValidSubmit = (
   component: RenderResult,
   email = 'any_email',
   password = 'any_password',
 ): void => {
-  populateEmailField(component, email);
-  populatePasswordField(component, password);
+  Helper.populateField({
+    sut: component,
+    fieldName: 'email',
+    value: email,
+  });
+  Helper.populateField({
+    sut: component,
+    fieldName: 'password',
+    value: password,
+  });
 
   const submitButton = component.getByTestId('submit') as HTMLButtonElement;
   fireEvent.click(submitButton);
@@ -111,14 +103,23 @@ describe('Login component', () => {
 
   it('should call Validation with correct email', () => {
     const sut = makeSut();
-    populateEmailField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+      value: 'any_email',
+    });
 
     expect(validation.validate).toHaveBeenCalledWith('email', 'any_email');
   });
 
   it('should call Validation with correct password', () => {
     const sut = makeSut();
-    populatePasswordField(sut);
+
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+      value: 'any_password',
+    });
 
     expect(validation.validate).toHaveBeenCalledWith(
       'password',
@@ -129,7 +130,10 @@ describe('Login component', () => {
   it('should show error if email Validation fails', () => {
     validation.validate.mockReturnValue(error);
     const sut = makeSut();
-    populateEmailField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
 
     Helper.testStatusForField({
       sut,
@@ -142,7 +146,10 @@ describe('Login component', () => {
     validation.validate.mockReturnValue(error);
     const sut = makeSut();
 
-    populatePasswordField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+    });
 
     Helper.testStatusForField({
       sut,
@@ -154,7 +161,10 @@ describe('Login component', () => {
   it('should show valid email state if Validation succeeds', () => {
     const sut = makeSut();
 
-    populateEmailField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
 
     Helper.testStatusForField({
       sut,
@@ -165,7 +175,10 @@ describe('Login component', () => {
   it('should show valid password state if Validation succeeds', () => {
     const sut = makeSut();
 
-    populatePasswordField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+    });
 
     Helper.testStatusForField({
       sut,
@@ -176,8 +189,14 @@ describe('Login component', () => {
   it('should enable submit button if form is valid', () => {
     const sut = makeSut();
 
-    populatePasswordField(sut);
-    populateEmailField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'password',
+    });
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
 
@@ -221,7 +240,10 @@ describe('Login component', () => {
     validation.validate.mockReturnValue(error);
     const sut = makeSut();
 
-    populateEmailField(sut);
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
     fireEvent.submit(sut.getByTestId('form'));
 
     expect(authentication.auth).toHaveBeenCalledTimes(0);
