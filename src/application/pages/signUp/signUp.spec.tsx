@@ -378,4 +378,12 @@ describe('SignUp component', () => {
     });
     expect(defaultError.textContent).toBe(error.message);
   });
+
+  it('should redirect to Login page', async () => {
+    const sut = makeSut();
+
+    const backToLoginLink = sut.getByTestId('login');
+    fireEvent.click(backToLoginLink);
+    expect(history.location.pathname).toBe('/login');
+  });
 });
