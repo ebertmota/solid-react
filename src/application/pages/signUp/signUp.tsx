@@ -63,18 +63,27 @@ export const SignUp: React.FC<SignUpProps> = ({ validation, addAccount }) => {
     ) {
       return;
     }
+
     setState(currentState => ({
       ...currentState,
       isLoading: true,
     }));
 
-    const { email, name, password } = state;
-    await addAccount.add({
-      email,
-      name,
-      password,
-      password_confirmation: password,
-    });
+    try {
+      const { email, name, password } = state;
+      await addAccount.add({
+        email,
+        name,
+        password,
+        password_confirmation: password,
+      });
+    } catch (error) {
+      setState(currentState => ({
+        ...currentState,
+        isLoading: false,
+        defaultError: error.message,
+      }));
+    }
   };
 
   return (
