@@ -1,9 +1,49 @@
 import React from 'react';
-import { cleanup, render, RenderResult } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from '@testing-library/react';
 import { Helper } from '@/tests/helpers';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Validation } from '@/application/protocols';
 import { SignUp } from './signUp';
+
+type SimulateValidSubmitInput = {
+  sut: RenderResult;
+  name?: string;
+  email?: string;
+  password?: string;
+  passwordConfirmation?: string;
+};
+
+const simulateValidSubmit = (input: SimulateValidSubmitInput): void => {
+  const { sut, email, name, password, passwordConfirmation } = input;
+  Helper.populateField({
+    sut,
+    fieldName: 'name',
+    value: name,
+  });
+  Helper.populateField({
+    sut,
+    fieldName: 'email',
+    value: email,
+  });
+  Helper.populateField({
+    sut,
+    fieldName: 'passwordConfirmation',
+    value: passwordConfirmation || password,
+  });
+  Helper.populateField({
+    sut,
+    fieldName: 'password',
+    value: password,
+  });
+
+  const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
+  fireEvent.click(submitButton);
+};
 
 describe('SignUp component', () => {
   let validationError: string;
@@ -208,5 +248,15 @@ describe('SignUp component', () => {
       fieldName: 'submit',
       isDisabled: false,
     });
+  });
+
+  it('should show loading spinner on submit', () => {
+    const sut = makeSut();
+
+    simulateValidSubmit({ sut });
+
+    const spinner = sut.getByTestId('spinner');
+
+    expect(spinner).toBeTruthy();
   });
 });
