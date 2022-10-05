@@ -294,4 +294,18 @@ describe('SignUp component', () => {
 
     expect(addAccount.add).toHaveBeenCalledTimes(1);
   });
+
+  it('should not call AddAccount if form is invalid', () => {
+    const error = 'any_validation_error';
+    validation.validate.mockReturnValue(error);
+    const sut = makeSut();
+
+    Helper.populateField({
+      sut,
+      fieldName: 'email',
+    });
+    fireEvent.submit(sut.getByTestId('form'));
+
+    expect(addAccount.add).toHaveBeenCalledTimes(0);
+  });
 });
