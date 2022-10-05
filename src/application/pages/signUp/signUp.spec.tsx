@@ -8,6 +8,7 @@ import {
 import { Helper } from '@/tests/helpers';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Validation } from '@/application/protocols';
+import { AddAccount } from '@/domain/usecases';
 import { SignUp } from './signUp';
 
 type SimulateValidSubmitInput = {
@@ -48,16 +49,19 @@ const simulateValidSubmit = (input: SimulateValidSubmitInput): void => {
 describe('SignUp component', () => {
   let validationError: string;
   let validation: MockProxy<Validation>;
+  let addAccount: MockProxy<AddAccount>;
   let makeSut: () => RenderResult;
 
   beforeAll(() => {
     validationError = 'Validation error';
     validation = mock();
     validation.validate.mockReturnValue(null);
+    addAccount = mock();
   });
 
   beforeEach(() => {
-    makeSut = () => render(<SignUp validation={validation} />);
+    makeSut = () =>
+      render(<SignUp validation={validation} addAccount={addAccount} />);
   });
 
   afterEach(() => {
@@ -258,5 +262,27 @@ describe('SignUp component', () => {
     const spinner = sut.getByTestId('spinner');
 
     expect(spinner).toBeTruthy();
+  });
+
+  it('should call AddAccount with correct input', () => {
+    const sut = makeSut();
+
+    const name = 'any_name';
+    const email = 'any_email';
+    const password = 'any_password';
+
+    simulateValidSubmit({
+      sut,
+      name,
+      email,
+      password,
+    });
+
+    expect(addAccount.add).toHaveBeenCalledWith({
+      name,
+      email,
+      password,
+      password_confirmation: password,
+    });
   });
 });
