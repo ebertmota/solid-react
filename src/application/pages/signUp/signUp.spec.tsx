@@ -285,4 +285,13 @@ describe('SignUp component', () => {
       password_confirmation: password,
     });
   });
+
+  it('should call AddAccount only once', () => {
+    const sut = makeSut();
+
+    simulateValidSubmit({ sut });
+    simulateValidSubmit({ sut });
+
+    expect(addAccount.add).toHaveBeenCalledTimes(1);
+  });
 });
