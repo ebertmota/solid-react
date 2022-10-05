@@ -360,4 +360,22 @@ describe('SignUp component', () => {
     });
     expect(history.location.pathname).toBe('/');
   });
+
+  it('should present error if SaveAccessToken fails', async () => {
+    const error = new EmailInUseError();
+    saveAccessToken.save.mockRejectedValueOnce(error);
+    const sut = makeSut();
+
+    simulateValidSubmit({ sut });
+    const errorWrap = sut.getByTestId('error-wrap');
+    await waitFor(() => errorWrap);
+    const defaultError = sut.getByTestId('default-error');
+
+    Helper.testChildCount({
+      sut,
+      fieldName: 'error-wrap',
+      count: 1,
+    });
+    expect(defaultError.textContent).toBe(error.message);
+  });
 });
