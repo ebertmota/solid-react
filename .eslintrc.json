@@ -24,6 +24,7 @@
         "prettier"
     ],
     "rules": {
+      "react/jsx-props-no-spreading": "off",
       "react/no-unused-prop-types": "off",
       "no-restricted-imports": ["error", {
         "patterns": [{
