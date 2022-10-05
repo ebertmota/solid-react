@@ -5,3 +5,4 @@ export * from './input/input';
 export * from './logo/logo';
 export * from './spinner/spinner';
 export * from './router/router';
+export * from './submit-button/submit-button';

@@ -4,6 +4,7 @@ import {
   FormStatus,
   Footer,
   LoginHeader,
+  SubmitButton,
 } from '@/application/components';
 import Context from '@/application/contexts/form/form-context';
 import { Validation } from '@/application/protocols';
@@ -25,6 +26,7 @@ export const Login: React.FC<LoginProps> = ({
   const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -33,11 +35,15 @@ export const Login: React.FC<LoginProps> = ({
   });
 
   useEffect(() => {
-    setState({
-      ...state,
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password),
-    });
+    const emailError = validation.validate('email', state.email);
+    const passwordError = validation.validate('password', state.password);
+
+    setState(currentState => ({
+      ...currentState,
+      emailError,
+      passwordError,
+      isFormInvalid: !!emailError || !!passwordError,
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.email, state.password]);
 
@@ -46,7 +52,7 @@ export const Login: React.FC<LoginProps> = ({
   ): Promise<void> => {
     event.preventDefault();
     try {
-      if (state.isLoading || state.emailError || state.passwordError) {
+      if (state.isLoading || state.isFormInvalid) {
         return;
       }
       setState(currentState => ({ ...currentState, isLoading: true }));
@@ -86,14 +92,7 @@ export const Login: React.FC<LoginProps> = ({
             name="password"
             placeholder="Digite sua senha"
           />
-          <button
-            data-testid="submit"
-            disabled={Boolean(state.emailError || state.passwordError)}
-            className={Styles.submit}
-            type="submit"
-          >
-            Entrar
-          </button>
+          <SubmitButton disabled={state.isFormInvalid} text="Entrar" />
           <Link to="/signup" data-testid="signup" className={Styles.link}>
             Crie sua conta
           </Link>

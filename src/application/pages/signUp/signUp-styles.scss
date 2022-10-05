@@ -23,16 +23,8 @@
       font-size: 20px;
     }
 
-    .submit {
+    button {
       margin-top: 32px;
-
-      &:disabled {
-        color: $disabledColor;
-        background-color: $disabledBackground;
-        &:hover {
-          opacity: 1;
-        }
-      }
     }
 
     .link {
