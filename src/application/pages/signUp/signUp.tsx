@@ -49,11 +49,23 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
       state.passwordConfirmationError,
   );
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setState(currentState => ({
+      ...currentState,
+      isLoading: true,
+    }));
+  };
+
   return (
     <div className={Styles.signUp}>
       <LoginHeader />
       <Context.Provider value={{ state, setState }}>
-        <form className={Styles.form}>
+        <form
+          data-testid="form"
+          className={Styles.form}
+          onSubmit={handleSubmit}
+        >
           <h2>Criar conta</h2>
           <Input type="text" name="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
