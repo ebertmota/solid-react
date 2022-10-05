@@ -7,13 +7,15 @@ import {
 } from '@/application/components';
 import Context from '@/application/contexts/form/form-context';
 import { Validation } from '@/application/protocols';
+import { AddAccount } from '@/domain/usecases';
 import Styles from './signUp-styles.scss';
 
-type LoginProps = {
+type SignUpProps = {
   validation: Validation;
+  addAccount: AddAccount;
 };
 
-export const SignUp: React.FC<LoginProps> = ({ validation }) => {
+export const SignUp: React.FC<SignUpProps> = ({ validation, addAccount }) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
@@ -49,12 +51,21 @@ export const SignUp: React.FC<LoginProps> = ({ validation }) => {
       state.passwordConfirmationError,
   );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setState(currentState => ({
       ...currentState,
       isLoading: true,
     }));
+
+    const { email, name, password } = state;
+    await addAccount.add({
+      email,
+      name,
+      password,
+      password_confirmation: password,
+    });
   };
 
   return (
