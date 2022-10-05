@@ -4,11 +4,13 @@ import {
   fireEvent,
   render,
   RenderResult,
+  waitFor,
 } from '@testing-library/react';
 import { Helper } from '@/tests/helpers';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Validation } from '@/application/protocols';
 import { AddAccount } from '@/domain/usecases';
+import { EmailInUseError } from '@/domain/errors';
 import { SignUp } from './signUp';
 
 type SimulateValidSubmitInput = {
@@ -307,5 +309,23 @@ describe('SignUp component', () => {
     fireEvent.submit(sut.getByTestId('form'));
 
     expect(addAccount.add).toHaveBeenCalledTimes(0);
+  });
+
+  it('should present error if AddAccount fails', async () => {
+    const error = new EmailInUseError();
+    addAccount.add.mockRejectedValueOnce(error);
+    const sut = makeSut();
+
+    simulateValidSubmit({ sut });
+    const errorWrap = sut.getByTestId('error-wrap');
+    await waitFor(() => errorWrap);
+    const defaultError = sut.getByTestId('default-error');
+
+    Helper.testChildCount({
+      sut,
+      fieldName: 'error-wrap',
+      count: 1,
+    });
+    expect(defaultError.textContent).toBe(error.message);
   });
 });
