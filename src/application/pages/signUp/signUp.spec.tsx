@@ -6,11 +6,14 @@ import {
   RenderResult,
   waitFor,
 } from '@testing-library/react';
-import { Helper } from '@/tests/helpers';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { createMemoryHistory, MemoryHistory } from 'history';
+
+import { Helper } from '@/tests/helpers';
 import { Validation } from '@/application/protocols';
-import { AddAccount } from '@/domain/usecases';
+import { AddAccount, SaveAccessToken } from '@/domain/usecases';
 import { EmailInUseError } from '@/domain/errors';
+import { Router } from 'react-router-dom';
 import { SignUp } from './signUp';
 
 type SimulateValidSubmitInput = {
@@ -52,18 +55,35 @@ describe('SignUp component', () => {
   let validationError: string;
   let validation: MockProxy<Validation>;
   let addAccount: MockProxy<AddAccount>;
+  let accessToken: string;
+  let saveAccessToken: MockProxy<SaveAccessToken>;
+  let history: MemoryHistory;
   let makeSut: () => RenderResult;
 
   beforeAll(() => {
     validationError = 'Validation error';
     validation = mock();
     validation.validate.mockReturnValue(null);
+    accessToken = 'any_access_token';
     addAccount = mock();
+    addAccount.add.mockResolvedValue({
+      accessToken,
+    });
+    saveAccessToken = mock();
+    history = createMemoryHistory();
   });
 
   beforeEach(() => {
     makeSut = () =>
-      render(<SignUp validation={validation} addAccount={addAccount} />);
+      render(
+        <Router location={history.location} navigator={history}>
+          <SignUp
+            validation={validation}
+            addAccount={addAccount}
+            saveAccessToken={saveAccessToken}
+          />
+        </Router>,
+      );
   });
 
   afterEach(() => {
@@ -327,5 +347,17 @@ describe('SignUp component', () => {
       count: 1,
     });
     expect(defaultError.textContent).toBe(error.message);
+  });
+
+  it('should call SaveAccessToken on success', async () => {
+    const sut = makeSut();
+
+    simulateValidSubmit({ sut });
+    await waitFor(() => sut.getByTestId('form'));
+
+    expect(saveAccessToken.save).toHaveBeenCalledWith({
+      accessToken,
+    });
+    expect(history.location.pathname).toBe('/');
   });
 });
