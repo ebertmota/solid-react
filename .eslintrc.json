@@ -1,13 +1,15 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true
+      "browser": true,
+      "es2021": true,
+      "cypress/globals": true
     },
     "extends": [
         "plugin:react/recommended",
         "airbnb",
         "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:cypress/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -21,7 +23,8 @@
         "react",
         "@typescript-eslint",
         "react-hooks",
-        "prettier"
+        "prettier",
+        "cypress"
     ],
     "rules": {
       "react/jsx-props-no-spreading": "off",
@@ -63,7 +66,13 @@
           "ts": "never",
           "tsx": "never"
         }
-     ]
+     ],
+     "cypress/no-assigning-return-values": "error",
+     "cypress/no-unnecessary-waiting": "error",
+     "cypress/assertion-before-screenshot": "warn",
+     "cypress/no-force": "warn",
+     "cypress/no-async-tests": "error",
+     "cypress/no-pause": "error"
     },
     "settings": {
       "import/resolver": {

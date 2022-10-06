@@ -17,6 +17,10 @@ module.exports = {
     '.+\\.(ts|tsx)&': 'ts-jest'
   },
   coverageDirectory: 'coverage',
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules',
+    '<rootDir>/tests/cypress',
+  ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}',
     '!<rootDir>/src/main/**/*',
