@@ -6,11 +6,11 @@ describe('ValidationComposite', () => {
   let fieldValidation: MockProxy<FieldValidation>;
   let anotherFieldValidation: MockProxy<FieldValidation>;
   let field: string;
-  let value: string;
+  let value: object;
 
   beforeAll(() => {
     field = 'any_field';
-    value = 'any_value';
+    value = { value: 'any_value' };
     fieldValidation = mock();
     fieldValidation.field = field;
     fieldValidation.validate.mockReturnValue(null);

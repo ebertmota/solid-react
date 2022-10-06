@@ -6,7 +6,7 @@ describe('EmailValidation', () => {
   it('should return an error if email is invalid', () => {
     const sut = new EmailValidation('email');
 
-    const error = sut.validate('any_email');
+    const error = sut.validate({ email: 'any_email' });
 
     expect(error).toEqual(new InvalidFieldError('email'));
   });
@@ -14,7 +14,7 @@ describe('EmailValidation', () => {
   it('should return falsy if email is invalid', () => {
     const sut = new EmailValidation('email');
 
-    const error = sut.validate(faker.internet.email());
+    const error = sut.validate({ email: faker.internet.email() });
 
     expect(error).toBeFalsy();
   });
@@ -22,7 +22,7 @@ describe('EmailValidation', () => {
   it('should return falsy if email is empty', () => {
     const sut = new EmailValidation('email');
 
-    const error = sut.validate('');
+    const error = sut.validate({ email: '' });
 
     expect(error).toBeFalsy();
   });

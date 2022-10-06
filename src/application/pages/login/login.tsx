@@ -35,8 +35,9 @@ export const Login: React.FC<LoginProps> = ({
   });
 
   useEffect(() => {
-    const emailError = validation.validate('email', state.email);
-    const passwordError = validation.validate('password', state.password);
+    const { email, password } = state;
+    const emailError = validation.validate('email', { email });
+    const passwordError = validation.validate('password', { password });
 
     setState(currentState => ({
       ...currentState,

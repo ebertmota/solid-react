@@ -2,6 +2,7 @@ import {
   RequiredFieldValidation,
   EmailValidation,
   MinLengthValidation,
+  CompareFieldsValidation,
 } from '@/application/validation/validators';
 import { ValidationBuilder } from './builder';
 
@@ -31,6 +32,16 @@ describe('ValidationBuilder', () => {
     const validations = sut.field(field).min(5).build();
 
     expect(validations).toEqual([new MinLengthValidation(field, 5)]);
+  });
+
+  it('should return CompareFieldsValidation when sameAs helper is used', () => {
+    const field = 'any_field';
+    const fieldToCompare = 'any_field';
+    const validations = sut.field(field).sameAs(fieldToCompare).build();
+
+    expect(validations).toEqual([
+      new CompareFieldsValidation(field, fieldToCompare),
+    ]);
   });
 
   it('should return a list of validations', () => {

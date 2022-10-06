@@ -109,7 +109,9 @@ describe('Login component', () => {
       value: 'any_email',
     });
 
-    expect(validation.validate).toHaveBeenCalledWith('email', 'any_email');
+    expect(validation.validate).toHaveBeenCalledWith('email', {
+      email: 'any_email',
+    });
   });
 
   it('should call Validation with correct password', () => {
@@ -121,10 +123,9 @@ describe('Login component', () => {
       value: 'any_password',
     });
 
-    expect(validation.validate).toHaveBeenCalledWith(
-      'password',
-      'any_password',
-    );
+    expect(validation.validate).toHaveBeenCalledWith('password', {
+      password: 'any_password',
+    });
   });
 
   it('should show error if email Validation fails', () => {

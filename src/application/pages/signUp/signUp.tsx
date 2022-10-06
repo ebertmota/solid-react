@@ -39,12 +39,13 @@ export const SignUp: React.FC<SignUpProps> = ({
   });
 
   useEffect(() => {
-    const nameError = validation.validate('name', state.name);
-    const emailError = validation.validate('email', state.email);
-    const passwordError = validation.validate('password', state.password);
+    const { name, email, password, passwordConfirmation } = state;
+    const nameError = validation.validate('name', { name });
+    const emailError = validation.validate('email', { email });
+    const passwordError = validation.validate('password', { password });
     const passwordConfirmationError = validation.validate(
       'passwordConfirmation',
-      state.passwordConfirmation,
+      { passwordConfirmation },
     );
 
     setState(currentState => ({

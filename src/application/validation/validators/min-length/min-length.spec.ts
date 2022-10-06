@@ -5,7 +5,7 @@ describe('MinLengthValidation', () => {
   it('should return error if values have less than provided characters', () => {
     const sut = new MinLengthValidation('field', 5);
 
-    const error = sut.validate('123');
+    const error = sut.validate({ field: '123' });
 
     expect(error).toEqual(new InvalidFieldError('field'));
   });
@@ -13,7 +13,7 @@ describe('MinLengthValidation', () => {
   it('should return falsy if values have provided characters', () => {
     const sut = new MinLengthValidation('field', 5);
 
-    const error = sut.validate('12345');
+    const error = sut.validate({ field: '12345' });
 
     expect(error).toBeFalsy();
   });
@@ -21,8 +21,14 @@ describe('MinLengthValidation', () => {
   it('should return falsy if values have more than provided characters', () => {
     const sut = new MinLengthValidation('field', 5);
 
-    const error = sut.validate('12345678910');
+    const error = sut.validate({ field: '12345678910' });
 
+    expect(error).toBeFalsy();
+  });
+
+  it('should return null if field not exists in validation input', () => {
+    const sut = new MinLengthValidation('field', 5);
+    const error = sut.validate({});
     expect(error).toBeFalsy();
   });
 });
