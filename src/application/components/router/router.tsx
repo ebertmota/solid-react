@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { SignUp } from '@/application/pages';
 
 type Props = {
   Login: React.FC;
+  SignUp: React.FC;
 };
 
-export const Router: React.FC<Props> = ({ Login }) => {
+export const Router: React.FC<Props> = ({ Login, SignUp }) => {
   return (
     <BrowserRouter>
       <Routes>
