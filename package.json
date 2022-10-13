@@ -11,7 +11,7 @@
     "test:watch": "yarn test --watch",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage",
-    "test:cypress": "cypress open"
+    "test:integration": "cypress open"
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.2",
