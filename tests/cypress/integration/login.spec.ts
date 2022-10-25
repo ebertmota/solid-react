@@ -52,15 +52,17 @@ describe('Login', () => {
   });
 
   it('should present error if invalid credentials are provided', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 401,
+      body: {
+        error: 'error',
+      },
+    });
     cy.getByTestId('email').focus().type('valid@email.com');
     cy.getByTestId('password').focus().type('12345');
 
     cy.getByTestId('submit').click();
     cy.getByTestId('error-wrap')
-      .getByTestId('spinner')
-      .should('exist')
-      .getByTestId('default-error')
-      .should('not.exist')
       .getByTestId('spinner')
       .should('not.exist')
       .getByTestId('default-error')
@@ -70,14 +72,17 @@ describe('Login', () => {
   });
 
   it('should save AccessToken if valid credentials are provided', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: 'any_access_token',
+      },
+    });
     cy.getByTestId('email').focus().type('mango@gmail.com');
     cy.getByTestId('password').focus().type('12345');
 
     cy.getByTestId('submit').click();
-    cy.getByTestId('error-wrap')
-      .getByTestId('spinner')
-      .should('exist')
-      .getByTestId('default-error')
+    cy.getByTestId('default-error')
       .should('not.exist')
       .getByTestId('spinner')
       .should('not.exist');
