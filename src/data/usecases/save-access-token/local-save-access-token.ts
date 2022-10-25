@@ -6,10 +6,10 @@ export class LocalSaveAccessToken implements SaveAccessToken {
 
   async save(params: SaveAccessToken.Params): Promise<void> {
     const { accessToken } = params;
+
     await this.setStorage.set({
       key: 'accessToken',
       value: accessToken,
     });
-    return Promise.resolve();
   }
 }
