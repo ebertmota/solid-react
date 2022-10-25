@@ -10,6 +10,7 @@ import Context from '@/application/contexts/form/form-context';
 import { Validation } from '@/application/protocols';
 import { Authentication, SaveAccessToken } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
+import { UnexpectedError } from '@/domain/errors';
 import Styles from './login-styles.scss';
 
 type LoginProps = {
@@ -61,6 +62,10 @@ export const Login: React.FC<LoginProps> = ({
         email: state.email,
         password: state.password,
       });
+
+      if (!account?.accessToken) {
+        throw new UnexpectedError();
+      }
 
       await saveAccessToken.save({
         accessToken: account.accessToken,
