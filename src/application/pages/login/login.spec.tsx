@@ -280,6 +280,18 @@ describe('Login component', () => {
     expect(history.location.pathname).toBe('/');
   });
 
+  it('should not call SaveAccessToken if Authentication not returns accessToken', async () => {
+    const sut = makeSut();
+    authentication.auth.mockResolvedValueOnce({
+      accessToken: undefined,
+    });
+
+    simulateValidSubmit(sut);
+    await waitFor(() => sut.getByTestId('form'));
+
+    expect(saveAccessToken.save).not.toHaveBeenCalled();
+  });
+
   it('should present error if SaveAccessToken fails', async () => {
     const saveAccessTokenError = new Error('saveAccessToken fails');
     saveAccessToken.save.mockImplementationOnce(() => {
