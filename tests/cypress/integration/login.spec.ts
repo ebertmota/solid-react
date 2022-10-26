@@ -51,7 +51,7 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants');
   });
 
-  it('should present error if invalid credentials are provided', () => {
+  it('should present invalid credentials error if api returns 401', () => {
     cy.intercept('POST', /login/, {
       statusCode: 401,
       body: {
@@ -67,6 +67,28 @@ describe('Login', () => {
       .should('not.exist')
       .getByTestId('default-error')
       .should('contain.text', 'Credenciais inválidas');
+
+    cy.url().should('eq', `${baseUrl}/login`);
+  });
+
+  it('should present unexpected error if api returns 400', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 400,
+      body: {
+        error: 'error',
+      },
+    });
+    cy.getByTestId('email').focus().type('valid@email.com');
+    cy.getByTestId('password').focus().type('12345');
+    cy.getByTestId('submit').click();
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner')
+      .should('not.exist')
+      .getByTestId('default-error')
+      .should(
+        'contain.text',
+        'Algo de errado aconteceu. Tente novamente mais tarde',
+      );
 
     cy.url().should('eq', `${baseUrl}/login`);
   });
@@ -91,5 +113,27 @@ describe('Login', () => {
     cy.window().then(window =>
       assert.isOk(window.localStorage.getItem('accessToken')),
     );
+  });
+
+  it('should present unexpected error if api returns 200 and invalid response', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        unexpectedProperty: 'any_access_token',
+      },
+    });
+
+    cy.getByTestId('email').focus().type('valid@email.com');
+    cy.getByTestId('password').focus().type('12345');
+    cy.getByTestId('submit').click();
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner')
+      .should('not.exist')
+      .getByTestId('default-error')
+      .should(
+        'contain.text',
+        'Algo de errado aconteceu. Tente novamente mais tarde',
+      );
+    cy.url().should('eq', `${baseUrl}/login`);
   });
 });
