@@ -22,11 +22,16 @@ export const Input: React.FC<Props> = props => {
   };
 
   return (
-    <div className={Styles.inputWrap}>
+    <div
+      className={Styles.inputWrap}
+      data-status={error ? 'invalid' : 'valid'}
+      data-testid={`${props.name}-wrap`}
+    >
       <input
         {...props}
         placeholder=" "
         id={props.name}
+        title={error}
         data-testid={props.name}
         readOnly
         onFocus={event => {
@@ -34,14 +39,14 @@ export const Input: React.FC<Props> = props => {
         }}
         onChange={handleChange}
       />
-      <label htmlFor={props.name}>{props.placeholder}</label>
-      <span
-        data-testid={`${props.name}-status`}
-        title={error || 'Tudo certo!'}
-        className={Styles.status}
+
+      <label
+        htmlFor={props.name}
+        title={error}
+        data-testid={`${props.name}-label`}
       >
-        {error ? '🔴' : '🟢'}
-      </span>
+        {props.placeholder}
+      </label>
     </div>
   );
 };

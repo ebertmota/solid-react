@@ -32,11 +32,14 @@ type TestStatusForFieldInput = FormHelper & {
 };
 
 export const testStatusForField = (input: TestStatusForFieldInput): void => {
-  const { sut, fieldName, value } = input;
-  const fieldStatus = sut.getByTestId(`${fieldName}-status`);
+  const { sut, fieldName, value = '' } = input;
+  const wrap = sut.getByTestId(`${fieldName}-wrap`);
+  const field = sut.getByTestId(`${fieldName}`);
+  const label = sut.getByTestId(`${fieldName}-label`);
 
-  expect(fieldStatus.title).toBe(value || 'Tudo certo!');
-  expect(fieldStatus.textContent).toBe(value ? '🔴' : '🟢');
+  expect(wrap.getAttribute('data-status')).toBe(value ? 'invalid' : 'valid');
+  expect(field.title).toBe(value);
+  expect(label.title).toBe(value);
 };
 
 type PopulateFieldInput = FormHelper & {
