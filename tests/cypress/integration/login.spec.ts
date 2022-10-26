@@ -136,4 +136,18 @@ describe('Login', () => {
       );
     cy.url().should('eq', `${baseUrl}/login`);
   });
+
+  it('should prevent multiple submits', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: 'any_access_token',
+      },
+    }).as('request');
+
+    cy.getByTestId('email').focus().type('valid@email.com');
+    cy.getByTestId('password').focus().type('12345');
+    cy.getByTestId('submit').dblclick();
+    cy.get('@request.all').should('have.length', 1);
+  });
 });
