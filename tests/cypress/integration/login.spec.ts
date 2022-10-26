@@ -150,7 +150,7 @@ describe('Login', () => {
     cy.get('@request.all').should('have.length', 1);
   });
 
-  it.only('should no call submit if form is invalid', () => {
+  it('should no call submit if form is invalid', () => {
     cy.intercept('POST', /login/, {
       statusCode: 200,
       body: {
