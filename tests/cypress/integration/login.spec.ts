@@ -79,8 +79,7 @@ describe('Login', () => {
       },
     });
     cy.getByTestId('email').focus().type('valid@email.com');
-    cy.getByTestId('password').focus().type('12345');
-    cy.getByTestId('submit').click();
+    cy.getByTestId('password').focus().type('12345').type('{enter}');
     cy.getByTestId('error-wrap')
       .getByTestId('spinner')
       .should('not.exist')
